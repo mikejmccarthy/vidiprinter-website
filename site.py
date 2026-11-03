@@ -16,7 +16,8 @@ pick   reads the production feed for a weekend (Friday to Monday, up to today;
        lines too long for a phone, are left out. A goal later ruled out is never
        picked. --dry-run prints the rows without writing anything.
 build  makes docs/index.html from template.html, content.json (every word on
-       the page) and highlights.json (the feed's rows). Run it after editing
+       the page) and highlights.json (the feed's rows), and docs/privacy.html
+       from privacy-template.html and privacy.html (the policy's text). Run it after editing
        either file by hand, then publish.
 
 publish builds, commits the page and its sources, and pushes; GitHub Pages
@@ -33,7 +34,12 @@ ROOT = HERE
 CONTENT = os.path.join(HERE, "content.json")
 HIGHLIGHTS = os.path.join(HERE, "highlights.json")
 TEMPLATE = os.path.join(HERE, "template.html")
-OUT = os.path.join(HERE, "docs", "index.html")   # GitHub Pages serves docs/
+DOCS = os.path.join(HERE, "docs")                 # GitHub Pages serves docs/
+OUT = os.path.join(DOCS, "index.html")
+STYLE = os.path.join(HERE, "style.css")
+PRIVACY = os.path.join(HERE, "privacy.html")
+PRIVACY_TEMPLATE = os.path.join(HERE, "privacy-template.html")
+PRIVACY_OUT = os.path.join(DOCS, "privacy.html")
 
 COLOURS = {"yellow", "cyan", "green", "red", "magenta", "grey"}
 
@@ -395,13 +401,23 @@ def build():
             v = v[part]
         return v
 
-    page = open(TEMPLATE).read()
-    page = re.sub(r"\{\{\{([\w.]+)\}\}\}", lambda m: computed[m.group(1)] if m.group(1) in computed
-                  else rich(lookup(m.group(1))), page)
-    page = re.sub(r"\{\{([\w.]+)\}\}", lambda m: esc(plain[m.group(1)]) if m.group(1) in plain
-                  else esc(lookup(m.group(1))), page)
-    with open(OUT, "w") as f:
-        f.write(page)
+    # On the privacy page the button leads to the home page's button.
+    computed["get_link_home"] = get_link.replace('href="#get"', 'href="./#get"')
+    computed["policy"] = open(PRIVACY).read()
+
+    def fill(template):
+        page = open(template).read()
+        page = re.sub(r"\{\{\{([\w.]+)\}\}\}", lambda m: computed[m.group(1)] if m.group(1) in computed
+                      else rich(lookup(m.group(1))), page)
+        return re.sub(r"\{\{([\w.]+)\}\}", lambda m: esc(plain[m.group(1)]) if m.group(1) in plain
+                      else esc(lookup(m.group(1))), page)
+
+    os.makedirs(DOCS, exist_ok=True)
+    for template, out in ((TEMPLATE, OUT), (PRIVACY_TEMPLATE, PRIVACY_OUT)):
+        with open(out, "w") as f:
+            f.write(fill(template))
+    with open(STYLE) as src, open(os.path.join(DOCS, "style.css"), "w") as f:
+        f.write(src.read())
     print(f"Built {os.path.relpath(OUT, ROOT)}: {len(feed)} feed rows, {len(feats)} features, "
           + ("App Store link set." if url else "no App Store link yet (shows coming soon)."))
 
@@ -413,7 +429,8 @@ def publish():
     serves the new page within a minute or two."""
     build()
     git = lambda *a: subprocess.run(["git", "-C", HERE, *a], check=True)
-    git("add", "content.json", "highlights.json", "template.html", "docs/index.html")
+    git("add", "content.json", "highlights.json", "template.html", "privacy-template.html", "privacy.html",
+        "style.css", "docs")
     if subprocess.run(["git", "-C", HERE, "diff", "--cached", "--quiet"]).returncode == 0:
         print("Nothing has changed since the last publish.")
         return

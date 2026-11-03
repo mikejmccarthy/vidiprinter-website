@@ -10,8 +10,10 @@ Run the commands below from this folder (`cd ~/Developer/VidiprinterWebsite`).
 |---|---|
 | `content.json` | Every word on the page: header, title, tabs, the features, the download button and the footer. Also the App Store link and the typing speeds |
 | `highlights.json` | The feed's rows, written by `pick` each weekend |
-| `template.html` | The layout and styling |
-| `docs/index.html` | The page, built from the three files above. Don't edit it: the next build replaces it |
+| `template.html` | The home page's layout |
+| `privacy.html` | The privacy policy's text, as HTML |
+| `style.css`, `privacy-template.html` | The shared styling, and the privacy page's layout |
+| `docs/` | The built site: `index.html`, `privacy.html` and `style.css`. Don't edit these: the next build replaces them |
 | `site.py` | Picks the highlights, builds the page and publishes it |
 
 ## Each weekend (Sunday evening or Monday)
@@ -51,3 +53,7 @@ Check `docs/index.html` in a browser, then run `publish`.
 - A stray comma before a closing `]` or `}` is fine. For any other mistake, the build names the line.
 - Write a double quote inside text as `\"`. Apostrophes are fine as they are.
 - When the app is live, put its link in `appStoreUrl`. The buttons then change from COMING SOON to GET THE APP and DOWNLOAD ON THE APP STORE.
+
+## The privacy policy
+
+It's at https://mikejmccarthy.github.io/vidiprinter-website/privacy.html. Edit `privacy.html`, update the date at the top, then run `build` and `publish`. The app and App Store Connect link to this address.
