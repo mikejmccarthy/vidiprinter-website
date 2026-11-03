@@ -1,0 +1,103 @@
+{
+  "_help": "All the website's words. Edit, then run: python3 Website/site.py build. Wrap words in ~~ ~~ to strike them through. Colours: yellow, cyan, green, red, magenta, grey.",
+
+  "appStoreUrl": "",
+
+  "typing": {
+    "_help": "Characters a second. The app types at 36.",
+    "feed": 36,
+    "features": 70
+  },
+
+  "page": {
+    "title": "Vidiprinter+",
+    "description": "Vidiprinter+ for iPhone: every goal, and every key statistic, the moment it happens. Live vidiprinter, live stats and alerts for your games."
+  },
+
+  "header": {
+    "name": "VIDIPRINTER+",
+    "getApp": "GET THE APP",
+    "comingSoon": "COMING SOON"
+  },
+
+  "hero": {
+    "title": "VIDIPRINTER",
+    "titleEnd": "+",
+    "tagline": "Every goal, and every key statistic, the moment it happens."
+  },
+
+  "tabs": {
+    "feed": "Latest",
+    "features": "What you get"
+  },
+
+  "feedNote": "Real rows from the feed, {dates}.",
+
+  "features": [
+    {
+      "code": "LIVE", "label": "GOAL", "colour": "yellow",
+      "title": "Every goal, the moment it goes in",
+      "lines": [
+        "Goals, red cards, missed penalties, results, displayed as they happen."
+      ]
+    },
+    {
+      "code": "STAT", "label": "LINES", "colour": "cyan",
+      "title": "The story behind the goal",
+      "lines": [
+        "Debuts, hat-tricks, scoring runs, droughts ended and season milestones, displayed as soon as they happen.",
+        "At full time: the result in context, comebacks, winning runs and table moves."
+      ]
+    },
+    {
+      "code": "PUSH", "label": "ALERT", "colour": "magenta",
+      "title": "Never miss a moment",
+      "lines": [
+        "Alerts for line-ups, kick-off, goals, red cards, missed penalties, half time and full time.",
+        "Vidiprinter+ supports push alerts, live activities and home screen widgets"
+      ]
+    },
+    {
+      "code": "CLUB", "label": "MY CLUB", "colour": "green",
+      "title": "Your club, front and centre",
+      "lines": [
+        "Follow as many clubs as you like.",
+        "Each club has its own page featuring detailed stats, results and fixtures."
+      ]
+    },
+    {
+      "code": "TBL", "label": "TABLES", "colour": "cyan",
+      "title": "Tables, the way you want them",
+      "lines": [
+        "Sort every league table by form, home and away record, goals for and against, xG, or between and two dates."
+      ]
+    },
+    {
+      "code": "SHR", "label": "SHARE", "colour": "yellow",
+      "title": "Post the line, not a screenshot",
+      "lines": [
+        "Any stat line becomes an image for sharing on social media."
+      ]
+    },
+    {
+      "code": "ALL", "label": "FT", "colour": "cyan",
+      "title": "Football, top to bottom",
+      "lines": [
+        "From the Premier League to the National League North and South in England, Women's Super League, WSL 2 and domestic cups. Scottish Premiership to League Two, plus both cups.",
+        "Europe's top leagues and cups, MLS and the Saudi Pro League.",
+      ]
+    }
+  ],
+
+  "download": {
+    "button": "DOWNLOAD ON THE APP STORE",
+    "comingSoon": "COMING SOON TO THE APP STORE",
+    "note": "For iPhone. Vidiprinter+ is £1.99 a month or £7.99 a year."
+  },
+
+  "footer": {
+    "text": "VIDIPRINTER+ for iPhone",
+    "privacyLink": "Privacy policy",
+    "privacyUrl": "https://claude.ai/artifact/BBJf5rjCoXE4sLjNLq23eA"
+  }
+}
