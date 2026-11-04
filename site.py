@@ -1,20 +1,24 @@
 #!/usr/bin/env python3
 """The Vidiprinter+ website: build it, and refresh its feed from the weekend.
 
-    python3 site.py pick [--weekend 2026-10-31] [--goals 4] [--fulltimes 2] [--dry-run]
+    python3 site.py pick [--weekend 2026-10-31] [--goals 7] [--fulltimes 3] [--dry-run]
+    python3 site.py top [3 1 7 2 9 5]
     python3 site.py build
     python3 site.py publish
 
 pick   reads the production feed for a weekend (Friday to Monday, up to today;
-       --weekend is its Saturday, the latest one by default), chooses its best
-       rows and writes them to highlights.json, then builds the page.
-       Goals with a stat line, best line first, each row a different type of
-       stat (similar rules count as one), at most two from one league and one
-       from a match, with a nudge
-       for the Premier League, the Champions League and the Europa League. Then
-       the best full times, one a league. Lines the app no longer shows, and
-       lines too long for a phone, are left out. A goal later ruled out is never
-       picked. --dry-run prints the rows without writing anything.
+       --weekend is its Saturday, the latest one by default) and writes its
+       top 10 rows, strongest first, to shortlist.json: goals with a stat
+       line, then full times, each led by a different type of stat (similar
+       rules count as one), at most two goals from one league and one row
+       from a match, with a nudge for the Premier League, the Champions
+       League and the Europa League. Lines the app no longer shows, and lines
+       too long for a phone, are left out. A goal later ruled out is never
+       picked. Then it asks for your six, in order. --dry-run prints the
+       shortlist without writing anything.
+top    writes the shortlist rows you name to highlights.json, top of the page
+       first, adds a strong second line where its type isn't already on the
+       page, then builds. With no numbers it shows the shortlist and asks.
 build  makes docs/index.html from template.html, content.json (every word on
        the page) and highlights.json (the feed's rows), and docs/privacy.html
        from privacy-template.html and privacy.html (the policy's text). Run it after editing
@@ -33,6 +37,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = HERE
 CONTENT = os.path.join(HERE, "content.json")
 HIGHLIGHTS = os.path.join(HERE, "highlights.json")
+SHORTLIST = os.path.join(HERE, "shortlist.json")     # pick's top 10; not published
 TEMPLATE = os.path.join(HERE, "template.html")
 DOCS = os.path.join(HERE, "docs")                 # GitHub Pages serves docs/
 OUT = os.path.join(DOCS, "index.html")
@@ -53,6 +58,7 @@ SECOND_LINE_MIN = 65     # a second line only when it is a strong one
 # A nudge (added to a line's priority) for the names most visitors know.
 FAVOURED = {8: 8, 2: 8, 5: 5, 501: 3, 9: 2}   # PL, UCL, UEL, SPL, Championship
 PER_LEAGUE_GOALS = 2
+TOP = 6                      # rows on the page
 
 
 class Server:
@@ -77,7 +83,9 @@ class Server:
             with open(cls.MAC_PREFS, "rb") as f:
                 return plistlib.load(f)["sessionToken"]
         except (OSError, KeyError):
-            sys.exit("No session token: set VIDI_TOKEN or write it to ~/.config/vidiprinter/token")
+            sys.exit("No session token. Terminal may not be allowed to read Commentator Pro's saved one "
+                     "(macOS protects other apps' data). Write the token to ~/.config/vidiprinter/token, "
+                     "or set VIDI_TOKEN.")
 
     @classmethod
     def get(cls, path, tok=""):
@@ -136,19 +144,6 @@ def usable(e):
                   key=lambda i: -i["priority"])
 
 
-def minute_of(e):
-    m = re.match(r"(\d+)(?:\+(\d+))?", e.get("minute") or "")
-    if not m:
-        return 0
-    n = int(m.group(1)) + int(m.group(2) or 0)
-    return n + (15 if n > 45 else 0)          # half time
-
-
-def when(e):
-    ko = dt.datetime.fromisoformat(e["kickoff"])
-    return ko + dt.timedelta(minutes=115 if e["kind"] == "fullTime" else minute_of(e))
-
-
 # Rules that read as the same kind of stat count as one type, so the page
 # never shows, say, a comeback and an away comeback.
 SAME_TYPE = {
@@ -198,16 +193,21 @@ def choose(entries, n, per_league, types, per_match=1):
     return picked
 
 
-def shown_lines(rows, types):
-    """The lead line, then a strong second line whose type isn't on the page."""
-    for e in rows:
-        e["_shown"] = [e["_lead"]]
-        for i in e["_lines"]:
-            if len(e["_shown"]) >= LINES_PER_ROW:
+def shown_lines(rows):
+    """Each row's lead line, then a strong second line whose type isn't
+    already on the page. `rows` are shortlist rows, top of the page first."""
+    types = {r["lead"]["type"] for r in rows}
+    out = []
+    for r in rows:
+        shown = [r["lead"]["text"]]
+        for i in r["others"]:
+            if len(shown) >= LINES_PER_ROW:
                 break
-            if i is not e["_lead"] and i["priority"] >= SECOND_LINE_MIN and stat_type(i) not in types:
-                e["_shown"].append(i)
-                types.add(stat_type(i))
+            if i["priority"] >= SECOND_LINE_MIN and i["type"] not in types:
+                shown.append(i["text"])
+                types.add(i["type"])
+        out.append(shown)
+    return out
 
 
 def weekend_days(saturday, today):
@@ -224,6 +224,8 @@ def dates_text(days):
 
 
 def pick(weekend, goals_n, fts_n, dry):
+    """Fetch the weekend, write its top rows to shortlist.json, then ask
+    which to show (when run in a terminal)."""
     api = Server
     tok = api.token()
     today = dt.date.today()
@@ -258,17 +260,17 @@ def pick(weekend, goals_n, fts_n, dry):
     used = {e["fixtureId"] for e in chosen}
     chosen += choose([e for e in fts if e["fixtureId"] not in used], fts_n, 1, types)
     if not chosen:
-        sys.exit("No rows with stat lines that weekend; highlights.json is unchanged.")
+        sys.exit("No rows with stat lines that weekend; nothing is written.")
     if len(chosen) < goals_n + fts_n:
         print(f"Only {len(chosen)} different stat types that weekend, so {len(chosen)} rows.")
-    shown_lines(chosen, types)
-    chosen.sort(key=when)
+    # The strongest first, goals and full times together.
+    chosen.sort(key=lambda e: -(e["_lead"]["priority"] + FAVOURED.get(e.get("leagueId"), 0)))
 
     def club(name, cid, side, e):
         n = short.get(cid, name)
         return n.upper() if e.get("emphasis") == side else n
 
-    rows, row_types = [], []
+    rows = []
     for e in chosen:
         row = {
             "code": codes.get(e.get("leagueId"), ""),
@@ -281,23 +283,90 @@ def pick(weekend, goals_n, fts_n, dry):
             row["player"] = f"{scorer(e)} {e.get('minute') or ''}".strip()
             if e.get("assist"):
                 row["assist"] = display_name(None, None, e["assist"], None)
-        row["lines"] = [i["text"] for i in e["_shown"]]
-        row_types.append(", ".join(stat_type(i) for i in e["_shown"]))
+        row["lead"] = {"text": e["_lead"]["text"], "type": stat_type(e["_lead"])}
+        row["others"] = [{"text": i["text"], "type": stat_type(i), "priority": i["priority"]}
+                         for i in e["_lines"] if i is not e["_lead"]]
         rows.append(row)
 
-    print(f"\nPicked {len(rows)} of {len(goals)} goals and {len(fts)} full times with lines (in print order):\n")
-    for r, t in zip(rows, row_types):
-        print(f"  {r['code']:4} {r['label']:4} {r['score']}" + (f"  {r['player']}" if r.get("player") else "") + f"   [{t}]")
-        for l in r["lines"]:
-            print(f"            › {l}")
+    print(f"\nThe top {len(rows)} of {len(goals)} goals and {len(fts)} full times with lines, "
+          "strongest first, each a different type of stat:\n")
+    show_shortlist(rows)
     if dry:
         print("\n--dry-run: nothing written.")
         return
+    with open(SHORTLIST, "w") as f:
+        json.dump({"_help": "Written by `site.py pick`. Choose from it with `site.py top`.",
+                   "dates": dates_text(played), "rows": rows}, f, ensure_ascii=False, indent=2)
+        f.write("\n")
+    print(f"\nWrote {os.path.relpath(SHORTLIST, ROOT)}")
+    if sys.stdin.isatty():
+        top(ask(len(rows)))
+    else:
+        print(f"Now choose your {TOP}, top of the page first: python3 site.py top 3 1 7 2 9 5")
+
+
+def show_shortlist(rows):
+    for n, r in enumerate(rows, 1):
+        print(f"{n:>3}  {r['code']:4} {r['label']:4} {r['score']}" + (f"  {r['player']}" if r.get("player") else ""))
+        print(f"           › {r['lead']['text']}   [{r['lead']['type']}]")
+        second = next((i for i in r["others"] if i["priority"] >= SECOND_LINE_MIN), None)
+        if second:
+            print(f"           + {second['text']}   [{second['type']}, if no other row has it]")
+
+
+def ask(n):
+    while True:
+        reply = input(f"\nYour {min(TOP, n)}, in order, top of the page first (e.g. 3 1 7 2 9 5): ")
+        try:
+            return parse_choice(reply.replace(",", " ").split(), n)
+        except ValueError as err:
+            print(err)
+
+
+def parse_choice(args, n):
+    try:
+        picks = [int(a) for a in args]
+    except ValueError:
+        raise ValueError("Give the rows' numbers, separated by spaces.")
+    if not picks:
+        raise ValueError("Give at least one number.")
+    if bad := [p for p in picks if not 1 <= p <= n]:
+        raise ValueError(f"The shortlist runs from 1 to {n}; {', '.join(map(str, bad))} isn't on it.")
+    if len(set(picks)) < len(picks):
+        raise ValueError("Each row once only.")
+    return picks
+
+
+def top(picks):
+    """Write the chosen shortlist rows to highlights.json, top of the page
+    first, then build. The page prints from the bottom up, so the first row
+    chosen types last and finishes on top."""
+    if not os.path.exists(SHORTLIST):
+        sys.exit("No shortlist yet: run python3 site.py pick first.")
+    sl = load(SHORTLIST)
+    try:
+        picks = parse_choice(picks, len(sl["rows"])) if picks and isinstance(picks[0], str) else picks
+    except ValueError as err:
+        sys.exit(str(err))
+    if len(picks) != min(TOP, len(sl["rows"])):
+        print(f"Note: {len(picks)} rows, not {TOP}.")
+    chosen = [sl["rows"][p - 1] for p in picks]
+    rows = []
+    for r, lines in zip(chosen, shown_lines(chosen)):
+        row = {k: v for k, v in r.items() if k not in ("lead", "others")}
+        row["lines"] = lines
+        rows.append(row)
+    rows.reverse()                       # highlights.json is in print order
+    print("\nThe feed, top of the page first:\n")
+    for r in reversed(rows):
+        print(f"  {r['code']:4} {r['label']:4} {r['score']}" + (f"  {r['player']}" if r.get("player") else ""))
+        for l in r["lines"]:
+            print(f"            › {l}")
     data = {
         "_help": "The feed on the website, in the order it prints (the last row ends up at the top). "
-                 "Written by `site.py pick`; edit by hand if you like, then run `site.py build`. "
+                 "Written by `site.py top`; edit by hand if you like, then run `site.py build`. "
                  "Colours: yellow, cyan, green, red, magenta, grey.",
-        "dates": dates_text(played),
+        "dates": sl["dates"],
         "rows": rows,
     }
     with open(HIGHLIGHTS, "w") as f:
@@ -442,14 +511,26 @@ def publish():
 
 if __name__ == "__main__":
     p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    p.add_argument("command", choices=["pick", "build", "publish"])
+    p.add_argument("command", choices=["pick", "top", "build", "publish"])
+    p.add_argument("rows", nargs="*", help="top: the shortlist numbers to show, top of the page first")
     p.add_argument("--weekend", help="pick: the weekend's Saturday, yyyy-MM-dd (default: the latest)")
-    p.add_argument("--goals", type=int, default=4, help="pick: how many goals (default 4)")
-    p.add_argument("--fulltimes", type=int, default=2, help="pick: how many full times (default 2)")
-    p.add_argument("--dry-run", action="store_true", help="pick: print the rows, write nothing")
+    p.add_argument("--goals", type=int, default=7, help="pick: how many goals on the shortlist (default 7)")
+    p.add_argument("--fulltimes", type=int, default=3, help="pick: how many full times on the shortlist (default 3)")
+    p.add_argument("--dry-run", action="store_true", help="pick: print the shortlist, write nothing")
     a = p.parse_args()
+    if a.rows and a.command != "top":
+        p.error("row numbers go with top")
     if a.command == "pick":
         pick(a.weekend, a.goals, a.fulltimes, a.dry_run)
+    elif a.command == "top":
+        if not a.rows:
+            if not os.path.exists(SHORTLIST):
+                sys.exit("No shortlist yet: run python3 site.py pick first.")
+            sl = load(SHORTLIST)
+            show_shortlist(sl["rows"])
+            top(ask(len(sl["rows"])))
+        else:
+            top(a.rows)
     elif a.command == "publish":
         publish()
     else:

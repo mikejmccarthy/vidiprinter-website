@@ -9,30 +9,39 @@ Run the commands below from this folder (`cd ~/Developer/VidiprinterWebsite`).
 | File | What's in it |
 |---|---|
 | `content.json` | Every word on the page: header, title, tabs, the features, the download button and the footer. Also the App Store link and the typing speeds |
-| `highlights.json` | The feed's rows, written by `pick` each weekend |
+| `highlights.json` | The feed's six rows, written by `top` (or `pick`) each weekend |
+| `shortlist.json` | The weekend's top 10, written by `pick`. Not published |
 | `template.html` | The home page's layout |
 | `privacy.html` | The privacy policy's text, as HTML |
 | `style.css`, `privacy-template.html` | The shared styling, and the privacy page's layout |
 | `docs/` | The built site: `index.html`, `privacy.html` and `style.css`. Don't edit these: the next build replaces them |
-| `site.py` | Picks the highlights, builds the page and publishes it |
+| `site.py` | Lists the weekend's top 10, writes your six, builds the page and publishes it |
 
 ## Each weekend (Sunday evening or Monday)
-
-```bash
-python3 site.py pick --dry-run
-```
-
-This shows the six rows it would choose from Friday to today, each with a different type of stat. If they look right, write them, rebuild the page and put it live:
 
 ```bash
 python3 site.py pick
 ```
 
+This reads Friday to today and lists the weekend's top 10 rows, strongest first, each led by a different type of stat. Under each row is its stat line, and sometimes a second line marked `+`, which appears only if no other row on the page has that type. Then it asks for your six:
+
+```
+Your 6, in order, top of the page first (e.g. 3 1 7 2 9 5):
+```
+
+The first number you give sits at the top of the page. The feed prints from the bottom up, so that row types last. Your choice is written to `highlights.json` and the page is rebuilt. Check `docs/index.html` in a browser, then put it live:
+
 ```bash
 python3 site.py publish
 ```
 
-To swap a row, edit `highlights.json`, then run `publish`. `--goals` and `--fulltimes` change how many rows it picks (4 and 2 by default). `--weekend 2026-10-31` picks an earlier weekend; give its Saturday.
+To change your mind, run `top` with new numbers. It reuses the same top 10 and doesn't fetch the feed again:
+
+```bash
+python3 site.py top 2 5 1 8 3 9
+```
+
+`top` with no numbers shows the list again and asks. `pick --dry-run` shows the top 10 without writing anything. `--goals` and `--fulltimes` change the mix of the 10 (7 and 3 by default). `--weekend 2026-10-31` picks an earlier weekend; give its Saturday. You can still edit `highlights.json` by hand, then run `publish`.
 
 `pick` reads the production feed with a session token. It finds the token in `$VIDI_TOKEN`, then `~/.config/vidiprinter/token`, then Commentator Pro's saved one. If the server refuses it, refresh the token and run `pick` again.
 
