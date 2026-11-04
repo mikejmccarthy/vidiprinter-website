@@ -1,49 +1,7 @@
 {
-  "_help": "The feed on the website, in the order it prints (the last row ends up at the top). Written by `site.py pick`; edit by hand if you like, then run `site.py build`. Colours: yellow, cyan, green, red, magenta, grey.",
+  "_help": "The feed on the website, in the order it prints (the last row ends up at the top). Written by `site.py top`; edit by hand if you like, then run `site.py build`. Colours: yellow, cyan, green, red, magenta, grey.",
   "dates": "30 October to 2 November 2026",
   "rows": [
-    {
-      "code": "CH",
-      "label": "GOAL",
-      "colour": "yellow",
-      "score": "MIDDLESBROUGH 2-0 Charlton",
-      "player": "Will LANKSHEAR 44'",
-      "assist": "Sebastian BERHALTER",
-      "lines": [
-        "Will Lankshear has scored in 5 games in a row"
-      ]
-    },
-    {
-      "code": "PL",
-      "label": "GOAL",
-      "colour": "yellow",
-      "score": "HULL 1-1 Ipswich",
-      "player": "Tim IROEGBUNAM 58'",
-      "assist": "Oli McBURNIE",
-      "lines": [
-        "Tim Iroegbunam's first goal for Hull City"
-      ]
-    },
-    {
-      "code": "CH",
-      "label": "GOAL",
-      "colour": "yellow",
-      "score": "Arbroath 0-4 RAITH",
-      "player": "George OAKLEY 78'",
-      "assist": "Scott TIFFONEY",
-      "lines": [
-        "Hat-trick for George Oakley"
-      ]
-    },
-    {
-      "code": "CH",
-      "label": "FT",
-      "colour": "cyan",
-      "score": "Partick 2-3 Morton",
-      "lines": [
-        "Greenock Morton win from behind away from home"
-      ]
-    },
     {
       "code": "PL",
       "label": "GOAL",
@@ -53,6 +11,50 @@
       "assist": "Mohammed KUDUS",
       "lines": [
         "Archie Gray scores for the first time since February, 20 games ago"
+      ]
+    },
+    {
+      "code": "CH",
+      "label": "GOAL",
+      "colour": "yellow",
+      "score": "Lincoln 0-2 BIRMINGHAM",
+      "player": "August PRISKE 60'",
+      "assist": "Christoph KLARER",
+      "lines": [
+        "August Priske has 6 goals in 8 games"
+      ]
+    },
+    {
+      "code": "L1",
+      "label": "GOAL",
+      "colour": "yellow",
+      "score": "MK DONS 1-0 Doncaster",
+      "player": "Aaron COLLINS 2'",
+      "assist": "Marvin EKPITETA",
+      "lines": [
+        "Aaron Collins goes top of the League One scorers with 10"
+      ]
+    },
+    {
+      "code": "L2",
+      "label": "GOAL",
+      "colour": "yellow",
+      "score": "SALFORD 2-1 Exeter",
+      "player": "Will AIMSON 88'",
+      "assist": "Abraham ODOH",
+      "lines": [
+        "Will Aimson scores against his old club (Exeter City 2022-2024)",
+        "Will Aimson's first goal for Salford City"
+      ]
+    },
+    {
+      "code": "NL",
+      "label": "FT",
+      "colour": "cyan",
+      "score": "Boreham Wood 4-3 Hartlepool",
+      "lines": [
+        "Boreham Wood: 9 league wins in a row",
+        "Boreham Wood unbeaten in 22 league games"
       ]
     },
     {
