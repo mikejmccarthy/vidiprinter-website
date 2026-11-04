@@ -58,6 +58,13 @@
       ]
     },
     {
+      "code": "HIDE", "label": "SPOILER", "colour": "red",
+      "title": "Keep games out of your feed",
+      "lines": [
+        "Streaming, or watching your game on delay? Hide your club's matches from the vidiprinter feed so you never accidentally spoil the action."
+      ]
+    },
+    {
       "code": "CLUB", "label": "MY CLUB", "colour": "green",
       "title": "Your club, front and centre",
       "lines": [
