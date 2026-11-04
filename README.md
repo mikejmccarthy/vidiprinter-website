@@ -2,7 +2,7 @@
 
 The website for the Vidiprinter+ iPhone app, served by GitHub Pages from `docs/index.html`.
 
-Live at https://mikejmccarthy.github.io/vidiprinter-website/
+Live at https://vidiprinterplus.app (GitHub Pages; the domain is set in `docs/CNAME` and its DNS is at Cloudflare).
 
 Run the commands below from this folder (`cd ~/Developer/VidiprinterWebsite`).
 
@@ -56,4 +56,4 @@ Check `docs/index.html` in a browser, then run `publish`.
 
 ## The privacy policy
 
-It's at https://mikejmccarthy.github.io/vidiprinter-website/privacy.html. Edit `privacy.html`, update the date at the top, then run `build` and `publish`. The app and App Store Connect link to this address.
+It's at https://vidiprinterplus.app/privacy.html. Edit `privacy.html`, update the date at the top, then run `build` and `publish`. The app and App Store Connect link to this address.
