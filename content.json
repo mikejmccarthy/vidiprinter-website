@@ -42,15 +42,15 @@
       ]
     },
     {
-      "code": "STAT", "label": "LINES", "colour": "cyan",
-      "title": "The story behind the goal",
+      "code": "FACT", "label": "STATS", "colour": "cyan",
+      "title": "More than the score",
       "lines": [
-        "Debuts, hat-tricks, scoring runs, droughts ended and season milestones, displayed as soon as they happen.",
+        "The story behind the goal. Debuts, hat-tricks, scoring runs, droughts ended and season milestones, displayed as soon as they happen.",
         "At full time: the result in context, comebacks, winning runs and table moves."
       ]
     },
     {
-      "code": "PUSH", "label": "ALERT", "colour": "magenta",
+      "code": "PUSH", "label": "ALERTS", "colour": "magenta",
       "title": "Never miss a moment",
       "lines": [
         "Alerts for line-ups, kick-off, goals, red cards, missed penalties, half time and full time.",
@@ -58,25 +58,25 @@
       ]
     },
     {
-      "code": "HIDE", "label": "SPOILER", "colour": "red",
+      "code": "HIDE", "label": "NO SPOILERS", "colour": "red",
       "title": "Keep games out of your feed",
       "lines": [
         "Streaming, or watching your game on delay? Hide your club's matches from the vidiprinter feed so you never accidentally spoil the action."
       ]
     },
     {
-      "code": "CLUB", "label": "MY CLUB", "colour": "green",
-      "title": "Your club, front and centre",
+      "code": "FAN", "label": "MY CLUB", "colour": "green",
+      "title": "Your team, front and centre",
       "lines": [
         "Follow as many clubs as you like.",
-        "Each club has its own page featuring detailed stats, results and fixtures."
+        "Each one has its own page featuring detailed stats, results and fixtures."
       ]
     },
     {
       "code": "TBL", "label": "TABLES", "colour": "cyan",
-      "title": "Tables, the way you want them",
+      "title": "Standings, the way you want them",
       "lines": [
-        "Sort every league table by form, home and away record, goals for and against, xG, or between and two dates."
+        "Sort every league table by form, home and away record, goals for and against, xG, or between any two dates."
       ]
     },
     {
@@ -84,6 +84,13 @@
       "title": "Post the line, not a screenshot",
       "lines": [
         "Any stat line becomes an image for sharing on social media."
+      ]
+    },
+    {
+      "code": "NIL", "label": "NO ADS", "colour": "magenta",
+      "title": "Just the football",
+      "lines": [
+        "No banners, no pop-ups, no betting promos. Nothing between you and the scores."
       ]
     },
     {
