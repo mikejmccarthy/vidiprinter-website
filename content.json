@@ -112,6 +112,8 @@
   "footer": {
     "text": "VIDIPRINTER+ for iPhone",
     "privacyLink": "Privacy policy",
-    "privacyUrl": "privacy.html"
+    "privacyUrl": "privacy.html",
+    "supportLink": "Support: support@vidiprinterplus.app",
+    "supportUrl": "mailto:support@vidiprinterplus.app"
   }
 }
