@@ -24,7 +24,7 @@
 <!-- The privacy policy's text. Edit it here, then run: python3 site.py build -->
 <p class="eyebrow">Vidiprinter+</p>
 <h1>Privacy Policy</h1>
-<p class="dates">Effective 23 October 2026 · Updated 1 November 2026 (alerts)</p>
+<p class="dates">Effective 23 October 2026 · Updated 8 November 2026 (Live Activities)</p>
 
 <div class="summary">
   <h2>In short</h2>
@@ -70,17 +70,22 @@
   </p>
   <ul>
     <li>the push token Apple gives the app on your iPhone, a random address for sending it notifications;</li>
-    <li>the clubs and competitions you want alerts for, and which events (goals, results, red cards, missed penalties);</li>
+    <li>the clubs and competitions you want alerts for, the clubs you've hidden, and which events (goals, results, red cards, missed penalties);</li>
     <li>whether the app is a test build.</li>
   </ul>
   <p>
+    If you follow matches live on your Lock Screen (Live Activities, iOS 18 and later), the app also sends a second
+    push token Apple gives it for starting Live Activities, the matches you're following now or have queued for
+    kick-off, whether to follow your clubs' matches automatically, and the look of the Live Activity.
+  </p>
+  <p>
     The server keeps these with your subscription's transaction identifier, so only subscribers get alerts, and
-    notes when the app last sent them. We use them only to send the alerts you've asked for. The server sends each
+    notes when the app last sent them. We use them only to send the alerts and Live Activities you've asked for. The server sends each
     alert through Apple's push notification service, which needs the push token to deliver it.
   </p>
   <p>
-    To stop alerts, turn them off in Settings → Notifications in the app, which deletes your phone's record on our
-    server. You can also turn notifications off for Vidiprinter+ in your iPhone's Settings, or delete the app.
+    To stop alerts, turn them off in Settings → Notifications in the app. Once your phone needs our server for
+    neither alerts nor Live Activities, the app deletes its record there. You can also turn notifications off for Vidiprinter+ in your iPhone's Settings, or delete the app.
   </p>
   <p>
     <strong>Settings on your iPhone.</strong> Your chosen look, light or dark setting, the competitions and clubs
@@ -187,8 +192,8 @@
     Apple's records. Ask us and we'll delete it.
   </p>
   <p>
-    <strong>Alert choices and push tokens</strong> are kept while alerts are on. They're deleted when you turn
-    alerts off, when Apple tells us the push token no longer works (for example, after you delete the app), or
+    <strong>Alert choices, Live Activity choices and push tokens</strong> are kept while alerts or Live Activities need them. They're deleted when you turn
+    both off, when Apple tells us the push token no longer works (for example, after you delete the app), or
     after 60 days without the app being opened.
   </p>
   <p><strong>Request counts</strong> are kept in memory only, for a few minutes at most. <strong>Server logs</strong> are kept for a short period by our hosting provider, then deleted.</p>
